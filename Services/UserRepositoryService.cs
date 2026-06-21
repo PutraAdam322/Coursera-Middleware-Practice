@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using System.Threading.Tasks;
 
 public class UserRepositoryService : IService
 {
@@ -10,28 +10,32 @@ public class UserRepositoryService : IService
     public UserRepositoryService()
     {
         _serviceId = new Random().Next(100000,999999);
+        LogCreation($"Message: UserRepositoryService {_serviceId} created.");
     }
 
-    public User GetUser(int id)
+    public async Task<User?> Get(int id)
     {
         return Users.Find(u => u.Id == id);
     }
 
-    public void InsertUser(User user)
+    public async Task<bool> Insert(User user)
     {
+        if (Users.Contains(user)) return false;
         idCounter++;
         user.SetId(idCounter);
         Users.Add(user);
+        return true;
     }
 
-    public void RemoveUser(int id)
+    public async Task Remove(int id)
     {
         Users.RemoveAll(u => u.Id==id);
     }
 
-    public void EditUser(int id, User user)
+    public async Task Edit(int id, User user)
     {
         Users.Find(u => u.Id==id).Username = user.Username;
+        Users.Find(u => u.Id==id).Password = user.Password;
     }
 
     public void LogCreation(string message){
