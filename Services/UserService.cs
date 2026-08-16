@@ -40,8 +40,10 @@ public class UserService : IService
 
     public async Task<bool> RegisterUserAsync(User user)
     {
-        var isReg = await _userRepositoryService.Insert(user);
-        return isReg? true:false;
+        var isRegd = await _userRepositroyService.GetByUsername(user.Username);
+        if(isRegd != null) return false;
+        var isSuccess = await _userRepositoryService.Insert(user);
+        return isSuccess? true:false;
     }
 
     public void LogCreation(string message){

@@ -18,6 +18,11 @@ public class UserRepositoryService : IService
         return Users.Find(u => u.Id == id);
     }
 
+    public async Task<User?> GetByEmail(string username)
+    {
+        return Users.Find(u => u.Username == username);
+    }
+
     public async Task<bool> Insert(User user)
     {
         if (Users.Contains(user)) return false;
