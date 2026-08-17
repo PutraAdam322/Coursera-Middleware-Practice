@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-public class UserRepositoryService : IService
+public class UserRepositoryService : IUserRepositoryService
 {
     private readonly int _serviceId;
     private List<User> Users = new List<User>{};
@@ -36,6 +36,11 @@ public class UserRepositoryService : IService
     {
         Users.Find(u => u.Id==id).Username = user.Username;
         Users.Find(u => u.Id==id).Password = user.Password;
+    }
+
+    public async Task<User?> Validate(string username, string password)
+    {
+        return Users.Find(u => u.Username == username && u.Password == password);
     }
 
     public void LogCreation(string message){

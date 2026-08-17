@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
-public class UserService : IService
+public class UserService : IUserService
 {
     private readonly int _serviceId;
     private readonly UserRepositoryService _userRepositoryService;
@@ -14,7 +15,7 @@ public class UserService : IService
 
     public async Task<User?> GetUserAsync(int id)
     {
-        User user = await _userRepositoryService.Get(id);
+        var user = await _userRepositoryService.Get(id);
         if(user != null)
         {
             LogCreation("Message: Get user successful");
@@ -26,7 +27,7 @@ public class UserService : IService
 
     public async Task<bool> EditUserAsync(int id)
     {
-        User user = await _userRepositoryService.Get(id);
+        var user = await _userRepositoryService.Get(id);
         if(user != null)
         {
             await _userRepositoryService.Edit(id, user);
@@ -40,8 +41,25 @@ public class UserService : IService
 
     public async Task<bool> RegisterUserAsync(User user)
     {
-        var isReg = await _userRepositoryService.Insert(user);
-        return isReg? true:false;
+        bool isReg = await _userRepositoryService.Insert(user);
+        if(isReg)
+        {
+            LogCreation("Message: Register user successful");
+            return true;
+        }
+        LogCreation("Message: Register user failed");
+        return false;
+    }
+    public async Task<int?> LoginUserAsync(string username, string password)
+    {
+        var user = await _userRepositoryService.Validate(username, password);
+        if(user != null)
+        {
+            LogCreation("Message: Login successful");
+            return user.Id;
+        }
+        LogCreation("Message: Login failed");
+        return null;
     }
 
     public void LogCreation(string message){
