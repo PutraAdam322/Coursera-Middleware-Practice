@@ -50,13 +50,13 @@ public class UserService : IUserService
         LogCreation("Message: Register user failed");
         return false;
     }
-    public async Task<int?> LoginUserAsync(string username, string password)
+    public async Task<User?> LoginUserAsync(string username, string password)
     {
         var user = await _userRepositoryService.Validate(username, password);
         if(user != null)
         {
             LogCreation("Message: Login successful");
-            return user.Id;
+            return user;
         }
         LogCreation("Message: Login failed");
         return null;

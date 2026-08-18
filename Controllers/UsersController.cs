@@ -13,11 +13,15 @@ namespace WebApiPractice.Controllers
             _userService = userService;
         }
 
-        [HttpPost("{id}")]
-        public async Task<ActionResult<User>> Login(string username, string password)
+        [HttpPost("register")]
+        public async Task<ActionResult> Login(string username, string password)
         {
-            var user = await _userService.LoginAsync(username, password);
-            return Ok();
+            var user = await _userService.LoginUserAsync(username, password);
+            if(user == null)
+            {
+                return Unauthorized("Wrong username or password");
+            }
+            return Created($"/api/{user.Id}", user);
         }
     }
 }
