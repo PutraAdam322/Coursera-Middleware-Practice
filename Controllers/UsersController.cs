@@ -23,5 +23,28 @@ namespace WebApiPractice.Controllers
             }
             return Created($"/api/{user.Id}", user);
         }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetUser(int id)
+        {
+            var user = await _userService.GetUserAsync(id);
+            if(user == null)
+            {
+                return NotFound("404 Not Found");
+            }
+            return Ok(user);
+        }
+
+        [HttpGet("users")]
+        public async Task<ActionResult> GetAllUser(int id)
+        {
+            var users = await _userService.GetAllUserAsync();
+            if(users == null)
+            {
+                return NotFound("404 Not Found");
+            }
+            return Ok(users);
+        }
+
     }
 }

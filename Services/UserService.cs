@@ -62,6 +62,11 @@ public class UserService : IUserService
         return null;
     }
 
+    public async Task<List<User>> GetAllUserAsync()
+    {
+        return await _userRepositoryService.GetAll();
+    }
+
     public void LogCreation(string message){
         Console.WriteLine($"{message} - Service ID: {_serviceId}");
     }

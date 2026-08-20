@@ -5,4 +5,5 @@ public interface IUserService
     public Task<bool> EditUserAsync(int id);
     public Task<bool> RegisterUserAsync(User user);
     public Task<User?> LoginUserAsync(string username, string password);
+    public Task<List<User>> GetAllUserAsync();
 }

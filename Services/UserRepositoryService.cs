@@ -48,6 +48,11 @@ public class UserRepositoryService : IUserRepositoryService
         return Users.Find(u => u.Username == username && u.Password == password);
     }
 
+    public async Task<List<User>> GetAll()
+    {
+        return Users;
+    }
+
     public void LogCreation(string message){
         Console.WriteLine($"{message} - Service ID: {_serviceId}");
     }
