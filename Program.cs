@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
+builder.Services.AddControllers();
 builder.Services.AddSingleton<IUserRepositoryService, UserRepositoryService>();
 builder.Services.AddScoped<IUserService, UserService>();
 

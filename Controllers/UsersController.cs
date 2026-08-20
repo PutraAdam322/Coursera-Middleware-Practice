@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApiPractice.Controllers
 {
+    [Route("api/[controller]")]
     [ApiController]
-    [Route("api/[contoller]")]
 
     public class UsersController : ControllerBase
     {
@@ -35,7 +35,7 @@ namespace WebApiPractice.Controllers
             return Ok(user);
         }
 
-        [HttpGet("users")]
+        [HttpGet("all")]
         public async Task<ActionResult> GetAllUser(int id)
         {
             var users = await _userService.GetAllUserAsync();

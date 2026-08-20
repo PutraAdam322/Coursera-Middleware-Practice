@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 public class UserService : IUserService
 {
     private readonly int _serviceId;
-    private readonly UserRepositoryService _userRepositoryService;
+    private readonly IUserRepositoryService _userRepositoryService;
 
-    public UserService(UserRepositoryService userRepositoryService){
+    public UserService(IUserRepositoryService userRepositoryService){
         _serviceId = new Random().Next(100000,999999);
         _userRepositoryService = userRepositoryService;
         LogCreation($"Message: UserService {_serviceId} created.");
