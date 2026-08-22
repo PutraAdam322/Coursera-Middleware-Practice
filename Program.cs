@@ -29,6 +29,7 @@ app.Use(async (context, next) =>
         await context.Response.WriteAsync("An exception was caught, please try again later.");
     }
 });
+app.UseRouting();
 
 app.MapControllers();
 

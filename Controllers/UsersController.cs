@@ -13,15 +13,26 @@ namespace WebApiPractice.Controllers
             _userService = userService;
         }
 
-        [HttpPost("register")]
-        public async Task<ActionResult> Login(string username, string password)
+        [HttpPost("login")]
+        public async Task<ActionResult> Login([FromBody] User user)
         {
-            var user = await _userService.LoginUserAsync(username, password);
-            if(user == null)
+            var usr = await _userService.LoginUserAsync(user.Username, user.Password);
+            if(usr == null)
             {
                 return Unauthorized("Wrong username or password");
             }
-            return Created($"/api/{user.Id}", user);
+            return Ok(new Response<string>(200, "Login successful", usr.Username));
+        }
+
+        [HttpPost("register")]
+        public async Task<ActionResult> Register([FromBody] User user)
+        {
+            var usr = await _userService.RegisterUserAsync(user);
+            if(usr == false)
+            {
+                return BadRequest("Username already exists");
+            }
+            return Ok(new Response<string>(200, "Registration successful"));
         }
 
         [HttpGet("{id}")]
@@ -30,7 +41,7 @@ namespace WebApiPractice.Controllers
             var user = await _userService.GetUserAsync(id);
             if(user == null)
             {
-                return NotFound("404 Not Found");
+                return NotFound(new Response<string>(404, "User not found"));
             }
             return Ok(user);
         }
@@ -39,9 +50,10 @@ namespace WebApiPractice.Controllers
         public async Task<ActionResult> GetAllUser(int id)
         {
             var users = await _userService.GetAllUserAsync();
-            if(users == null)
+            Console.WriteLine($"Users count: {users.Count()}");
+            if(users.Count() == 0)
             {
-                return NotFound("404 Not Found");
+                return NotFound("Users Empty");
             }
             return Ok(users);
         }
