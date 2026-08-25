@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace WebApiPractice.Controllers
 {
@@ -19,9 +20,9 @@ namespace WebApiPractice.Controllers
             var usr = await _userService.LoginUserAsync(user.Username, user.Password);
             if(usr == null)
             {
-                return Unauthorized("Wrong username or password");
+                return Unauthorized(new Response<User>(Unauthorized().StatusCode, "Invalid username or password"));
             }
-            return Ok(new Response<string>(200, "Login successful", usr.Username));
+            return Ok(new Response<User>(200, "Login successful", usr));
         }
 
         [HttpPost("register")]
@@ -30,9 +31,9 @@ namespace WebApiPractice.Controllers
             var usr = await _userService.RegisterUserAsync(user);
             if(usr == false)
             {
-                return BadRequest("Username already exists");
+                return BadRequest(new Response<string>(BadRequest().StatusCode, "Username already exists"));
             }
-            return Ok(new Response<string>(200, "Registration successful"));
+            return Ok(new Response<string>(Ok().StatusCode, "Registration successful"));
         }
 
         [HttpGet("{id}")]
@@ -41,9 +42,9 @@ namespace WebApiPractice.Controllers
             var user = await _userService.GetUserAsync(id);
             if(user == null)
             {
-                return NotFound(new Response<string>(404, "User not found"));
+                return Ok(new Response<string>(Ok().StatusCode, "User not found"));
             }
-            return Ok(user);
+            return Ok(new Response<string>(Ok().StatusCode, "User found", JsonSerializer.Serialize(user)));
         }
 
         [HttpGet("all")]
@@ -53,9 +54,9 @@ namespace WebApiPractice.Controllers
             Console.WriteLine($"Users count: {users.Count()}");
             if(users.Count() == 0)
             {
-                return NotFound("Users Empty");
+                return NoContent();
             }
-            return Ok(users);
+            return Ok(new Response<IEnumerable<User>>(Ok().StatusCode, "Users found", users));
         }
 
     }

@@ -10,5 +10,9 @@ public class Response<T>
         Message = message;
         Data = data;
     }
+    public Response(int statusCode, string message)
     {
+        StatusCode = statusCode;
+        Message = message;
+    }
 }

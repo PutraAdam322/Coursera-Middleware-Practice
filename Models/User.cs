@@ -3,7 +3,7 @@ public class User
     public int Id {get; set;}
     public string Username {get; set;}
     public string Password {get; set;}
-    public Post? post;
+    public List<Post> Posts {get; set;} = new List<Post>();
 
     public User(string username, string password)
     {
