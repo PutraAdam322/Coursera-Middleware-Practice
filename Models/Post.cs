@@ -1,13 +1,13 @@
 public class Post
 {
     public string Title { get; set; }
-    public string Body { get; set; }
+    public string Content { get; set; }
+    public int Id { get; set; }
 
-    public Post(string title, string body)
+    public Post(string title, string content)
     {
         Title = title;
-        Body = body;
+        Content = content;
     }
-
 
 }

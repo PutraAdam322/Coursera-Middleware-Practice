@@ -15,9 +15,13 @@ namespace WebApiPractice.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> Login([FromBody] User user)
+        public async Task<ActionResult> Login([FromBody] UserDTO user)
         {
-            var usr = await _userService.LoginUserAsync(user.Username, user.Password);
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(new Response<string>(BadRequest().StatusCode, ModelState.Values.First().Errors.First().ErrorMessage));
+            }
+            var usr = await _userService.LoginUserAsync(user);
             if(usr == null)
             {
                 return Unauthorized(new Response<User>(Unauthorized().StatusCode, "Invalid username or password"));
@@ -26,8 +30,12 @@ namespace WebApiPractice.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult> Register([FromBody] User user)
+        public async Task<ActionResult> Register([FromBody] UserDTO user)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(new Response<string>(BadRequest().StatusCode, ModelState.Values.First().Errors.First().ErrorMessage));
+            }
             var usr = await _userService.RegisterUserAsync(user);
             if(usr == false)
             {

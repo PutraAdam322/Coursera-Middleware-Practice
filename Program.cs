@@ -11,6 +11,7 @@ builder.Logging.AddConsole();
 
 builder.Services.AddControllers();
 builder.Services.AddSingleton<IUserRepositoryService, UserRepositoryService>();
+builder.Services.AddSingleton<IHasherService, BCryptHasherService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddOpenApi();

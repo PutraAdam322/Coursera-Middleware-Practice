@@ -4,12 +4,14 @@ using System.Threading.Tasks;
 public class UserRepositoryService : IUserRepositoryService
 {
     private readonly int _serviceId;
+    private readonly IHasherService _hasherService;
     private List<User> Users = new List<User>{};
     private int idCounter = 0;
 
-    public UserRepositoryService()
+    public UserRepositoryService(IHasherService hasherService)
     {
         _serviceId = new Random().Next(100000,999999);
+        _hasherService = hasherService;
         LogCreation($"Message: UserRepositoryService {_serviceId} created.");
     }
 
@@ -45,7 +47,13 @@ public class UserRepositoryService : IUserRepositoryService
 
     public async Task<User?> Validate(string username, string password)
     {
-        return Users.Find(u => u.Username == username && u.Password == password);
+        Console.WriteLine($"UserRepositoryService: Validating user with username: {username}, password: {password}");
+        var user = Users.Find(u => u.Username == username);
+        if(user != null && _hasherService.VerifyPassword(password, user.Password))
+        {
+            return user;
+        }
+        return null;
     }
 
     public async Task<List<User>> GetAll()

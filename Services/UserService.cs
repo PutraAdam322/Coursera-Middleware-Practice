@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 public class UserService : IUserService
 {
     private readonly int _serviceId;
+    private readonly IHasherService _hasherService;
     private readonly IUserRepositoryService _userRepositoryService;
 
-    public UserService(IUserRepositoryService userRepositoryService){
+    public UserService(IUserRepositoryService userRepositoryService, IHasherService hasherService){
         _serviceId = new Random().Next(100000,999999);
         _userRepositoryService = userRepositoryService;
+        _hasherService = hasherService;
         LogCreation($"Message: UserService {_serviceId} created.");
     }
 
@@ -39,9 +41,10 @@ public class UserService : IUserService
     }
 
 
-    public async Task<bool> RegisterUserAsync(User user)
+    public async Task<bool> RegisterUserAsync(UserDTO user)
     {
-        bool isReg = await _userRepositoryService.Insert(user);
+        User tmp = new User(user.Username, _hasherService.HashPassword(user.Password));
+        bool isReg = await _userRepositoryService.Insert(tmp);
         if(isReg)
         {
             LogCreation("Message: Register user successful");
@@ -50,9 +53,10 @@ public class UserService : IUserService
         LogCreation("Message: Register user failed");
         return false;
     }
-    public async Task<User?> LoginUserAsync(string username, string password)
+    public async Task<User?> LoginUserAsync(UserDTO userDTO)
     {
-        var user = await _userRepositoryService.Validate(username, password);
+        Console.WriteLine($"UserService: Login attempt for username: {userDTO.Username}");
+        var user = await _userRepositoryService.Validate(userDTO.Username, userDTO.Password);
         if(user != null)
         {
             LogCreation("Message: Login successful");
