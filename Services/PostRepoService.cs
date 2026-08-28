@@ -7,7 +7,7 @@ public class PostRepositoryService : IPostRepositoryService
         Console.WriteLine($"Post created: {message}");
     }
 
-    public Task<List<Post>> GetAllAsync()
+    public Task<List<Post>> GetAll()
     {
         return Task.FromResult(_posts);
     }

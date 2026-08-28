@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -15,6 +17,7 @@ namespace WebApiPractice.Controllers
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<ActionResult> Login([FromBody] UserDTO user)
         {
             if(!ModelState.IsValid)
@@ -30,6 +33,7 @@ namespace WebApiPractice.Controllers
         }
 
         [HttpPost("register")]
+        [AllowAnonymous]
         public async Task<ActionResult> Register([FromBody] UserDTO user)
         {
             if(!ModelState.IsValid)
@@ -45,6 +49,7 @@ namespace WebApiPractice.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult> GetUser(int id)
         {
             var user = await _userService.GetUserAsync(id);
@@ -56,6 +61,7 @@ namespace WebApiPractice.Controllers
         }
 
         [HttpGet("all")]
+        [Authorize(Roles = "Administrator")]
         public async Task<ActionResult> GetAllUser(int id)
         {
             var users = await _userService.GetAllUserAsync();

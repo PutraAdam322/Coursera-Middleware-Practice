@@ -16,10 +16,10 @@ public class PostService : IPostService
         return await _postRepository.Get(id);
     }
 
-    /*public async Task<IEnumerable<Post>> GetAllPostsAsync()
+    public async Task<IEnumerable<Post>> GetAllPostsAsync()
     {
-        return await _postRepository.GetAllAsync();
-    }*/
+        return await _postRepository.GetAll();
+    }
 
     public async Task AddPostAsync(Post post)
     {
