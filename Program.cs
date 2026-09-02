@@ -7,7 +7,7 @@ var posts = new List<Post>{};
 
 var builder = WebApplication.CreateBuilder(args);
 
-var secretKey = builder.Configuration["JWT_SECRET_KEY"]; //
+var secretKey = "hffidsunhsdhggaooeag983737fhi8yu34uvutvn8234 vyg4vbgyo2ivgtbgo32vt24vt";
 
 builder.Services.AddAuthorization();
 
@@ -22,6 +22,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
+    options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
@@ -30,18 +31,22 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = false // Set to true and configure if needed
     };
 });
-
 builder.Services.AddControllers();
 builder.Services.AddSingleton<IUserRepositoryService, UserRepositoryService>();
+builder.Services.AddSingleton<IPostRepositoryService, PostRepositoryService>();
+builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddSingleton<IHasherService, BCryptHasherService>();
+builder.Services.AddSingleton<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapControllers();
 
 app.Use(async (context, next) =>
 {
@@ -55,9 +60,5 @@ app.Use(async (context, next) =>
         await context.Response.WriteAsync("An exception was caught, please try again later.");
     }
 });
-
-app.UseRouting();
-
-app.MapControllers();
 
 app.Run();

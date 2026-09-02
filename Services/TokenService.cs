@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.AspNetCore.Authentication;
 
 public class TokenService : ITokenService
 {
@@ -18,9 +19,10 @@ public class TokenService : ITokenService
         Console.WriteLine($"Token creation log: {message}");
     }
 
-    public string GenerateToken(User user)
+    public async Task<string> GenerateToken(User user)
     {
         DotNetEnv.Env.Load();
+        var jwtSecretKey = "hffidsunhsdhggaooeag983737fhi8yu34uvutvn8234 vyg4vbgyo2ivgtbgo32vt24vt";
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
@@ -29,7 +31,7 @@ public class TokenService : ITokenService
             //new Claim(ClaimTypes.Role, user.Role) // Assuming User has a Role property
         };
 
-        var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET_KEY"))) ?? throw new ArgumentNullException("JWT_SECRET_KEY is not set");
+        var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtSecretKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var descriptor = new SecurityTokenDescriptor
@@ -42,5 +44,13 @@ public class TokenService : ITokenService
         LogCreation($"Token generated for user: {user.Username}");
 
         return new JsonWebTokenHandler().CreateToken(descriptor);
+    }
+
+    public async Task<int> GetUserIdFromToken(string token)
+    {
+        var handler = new JsonWebTokenHandler();
+        JsonWebToken tkn = handler.ReadJsonWebToken(token);
+        int userId = int.Parse(tkn.Subject);
+        return userId;
     }
 }

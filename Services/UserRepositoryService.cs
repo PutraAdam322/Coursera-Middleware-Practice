@@ -27,7 +27,7 @@ public class UserRepositoryService : IUserRepositoryService
 
     public async Task<bool> Insert(User user)
     {
-        if (Users.Contains(user)) return false;
+        if (Users.Any(u => u.Username == user.Username)) return false;
         idCounter++;
         user.SetId(idCounter);
         Users.Add(user);
@@ -43,6 +43,34 @@ public class UserRepositoryService : IUserRepositoryService
     {
         Users.Find(u => u.Id==id).Username = user.Username;
         Users.Find(u => u.Id==id).Password = user.Password;
+    }
+
+    public async Task AssignPosts(int userId, Post post)
+    {
+        var user = Users.Find(u => u.Id == userId);
+        LogCreation($"AssignPosts called for userId: {userId}, postId: {post.Id}");
+        if (user != null)
+        {
+            LogCreation($"Assigning post with ID {post.Id} to user with ID {userId}");
+            user.AddPostId(post.Id);
+        }
+        else
+        {
+            LogCreation($"User not found.");
+        }
+    }
+
+    public async Task RemovePosts(int userId, Post post)
+    {
+        var user = Users.Find(u => u.Id == userId);
+        if (user != null)
+        {
+            user.RemovePostId(post.Id);
+        }
+        else
+        {
+            LogCreation($"User not found.");
+        }
     }
 
     public async Task<User?> Validate(string username, string password)

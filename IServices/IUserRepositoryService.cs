@@ -6,5 +6,7 @@ public interface IUserRepositoryService
     public Task Remove(int id);
     public Task Edit(int id, User user);
     public Task<List<User>> GetAll();
+    public Task AssignPosts(int userId, Post post);
+    public Task RemovePosts(int userId, Post post);
     public Task<User?> Validate(string username, string password);
 }

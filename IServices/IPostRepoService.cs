@@ -3,7 +3,7 @@ public interface IPostRepositoryService
     void LogCreation(string message);
     Task<List<Post>> GetAll();
     Task<Post> Get(int id);
-    Task Add(Post post);
-    Task Remove(int id);
-    Task Edit(int id, Post post);
+    Task Add(Post post, int userId);
+    Task Remove(int id, int userId);
+    Task Edit(int id, PostDTO post);
 }

@@ -1,5 +1,6 @@
 public interface ITokenService
 {
     void LogCreation(string message);
-    string GenerateToken(User user);
+    Task<string> GenerateToken(User user);
+    Task<int> GetUserIdFromToken(string token);
 }

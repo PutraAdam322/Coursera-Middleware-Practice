@@ -11,13 +11,14 @@ namespace WebApiPractice.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly ITokenService _tokenService;
 
-        public UsersController(IUserService userService){
+        public UsersController(IUserService userService, ITokenService tokenService){
             _userService = userService;
+            _tokenService = tokenService;
         }
 
         [HttpPost("login")]
-        [AllowAnonymous]
         public async Task<ActionResult> Login([FromBody] UserDTO user)
         {
             if(!ModelState.IsValid)
@@ -29,7 +30,8 @@ namespace WebApiPractice.Controllers
             {
                 return Unauthorized(new Response<User>(Unauthorized().StatusCode, "Invalid username or password"));
             }
-            return Ok(new Response<User>(200, "Login successful", usr));
+            var token = await _tokenService.GenerateToken(usr);
+            return Ok(new Response<string>(200, "Login successful", token));
         }
 
         [HttpPost("register")]
@@ -57,11 +59,11 @@ namespace WebApiPractice.Controllers
             {
                 return Ok(new Response<string>(Ok().StatusCode, "User not found"));
             }
-            return Ok(new Response<string>(Ok().StatusCode, "User found", JsonSerializer.Serialize(user)));
+            return Ok(new Response<User>(Ok().StatusCode, "User found", user));
         }
 
         [HttpGet("all")]
-        [Authorize(Roles = "Administrator")]
+        [AllowAnonymous]
         public async Task<ActionResult> GetAllUser(int id)
         {
             var users = await _userService.GetAllUserAsync();
