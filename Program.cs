@@ -7,7 +7,7 @@ var posts = new List<Post>{};
 
 var builder = WebApplication.CreateBuilder(args);
 
-var secretKey = "hffidsunhsdhggaooeag983737fhi8yu34uvutvn8234 vyg4vbgyo2ivgtbgo32vt24vt";
+var secretKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT key is not configured.");
 
 builder.Services.AddAuthorization();
 

@@ -21,8 +21,7 @@ public class TokenService : ITokenService
 
     public async Task<string> GenerateToken(User user)
     {
-        DotNetEnv.Env.Load();
-        var jwtSecretKey = "hffidsunhsdhggaooeag983737fhi8yu34uvutvn8234 vyg4vbgyo2ivgtbgo32vt24vt";
+        var jwtSecretKey = _configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT key is not configured.");
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
